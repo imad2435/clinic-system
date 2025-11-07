@@ -1,5 +1,5 @@
-import mongoose, { Schema } from 'mongoose';
-const PatientSchema=new Schema({
+import mongoose from 'mongoose';
+const PatientSchema=new mongoose.Schema({
     name:{
         type:String,
         required:true
@@ -17,8 +17,9 @@ const PatientSchema=new Schema({
     },
     role:{
         type:String,
+           enum: ['Patient'],
         default:"Patient"
     }
-})
+},{timestamps:true})
 const Patient=mongoose.model('Patient',PatientSchema);
 export default Patient;

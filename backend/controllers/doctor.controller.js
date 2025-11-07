@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken';
 export const registerDoctor = async (req, res) => {
     try {
         const { name, email, password, specialization, role } = req.body;
+        if(!name || !email || !password || !specialization) return res.status(400).json({ message: "Please fill all fields" })
 
         // Check if doctor already exists
         const existing = await Doctor.findOne({ email });
@@ -20,10 +21,11 @@ export const registerDoctor = async (req, res) => {
             email,
             password: hashedPassword,
             specialization,
-            role // optional, default "Doctor" in schema
+            role : role || "Doctor" // optional, default "Doctor" in schema
         });
-
-        res.status(201).json({ message: "Doctor registered successfully", doctor });
+    // Hide password before sending response
+    const { password: _, ...doctorData } = doctor._doc;
+        res.status(201).json({ message: "Doctor registered successfully", doctor:doctorData });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -33,7 +35,7 @@ export const registerDoctor = async (req, res) => {
 export const loginDoctor = async (req, res) => {
     try {
         const { email, password } = req.body;
-
+    if(!email || !password) return res.status(400).json({ message: "Please fill all fields" })
         // Find doctor by email
         const doctor = await Doctor.findOne({ email });
         if (!doctor) return res.status(400).json({ message: "Doctor does not exist" });
@@ -48,8 +50,14 @@ export const loginDoctor = async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: "1d" }
         );
-
-        res.status(200).json({ token, doctor });
+        res.cookie("token", token, {
+      httpOnly: true,
+      secure: false, // make true in production with HTTPS
+      sameSite: "strict",
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    });
+    const { password: _, ...doctorData } = doctor._doc;
+        res.status(200).json({ token, doctor:doctorData });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -58,7 +66,7 @@ export const loginDoctor = async (req, res) => {
 // ------------------- Get All Doctors -------------------
 export const getDoctors = async (req, res) => {
     try {
-        const doctors = await Doctor.find(); // Fetch all doctors
+        const doctors = await Doctor.find().select("-password"); // Fetch all doctors
         res.status(200).json(doctors);
     } catch (error) {
         res.status(500).json({ message: error.message });

@@ -15,13 +15,14 @@ const DoctorSchema= new mongoose.Schema({
     },
     role:{
         type:String,
+        enum: ['Doctor'], 
         default:"Doctor"
     },
     specialization:{
         type:String
     },
-    availabilty:[String]
-})
+    availability:[String]
+},{timestamps:true})
 
 const Doctor =mongoose.model('Doctor',DoctorSchema);
 export default Doctor;
