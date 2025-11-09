@@ -66,7 +66,7 @@ export const loginDoctor = async (req, res) => {
 // ------------------- Get All Doctors -------------------
 export const getDoctors = async (req, res) => {
     try {
-        const doctors = await Doctor.find().select("-password"); // Fetch all doctors
+        const doctors = await Doctor.find().select("-password"); // Fetch all doctors    hide password 
         res.status(200).json(doctors);
     } catch (error) {
         res.status(500).json({ message: error.message });
