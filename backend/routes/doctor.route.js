@@ -11,6 +11,6 @@ router.post('/register', registerDoctor);
 router.post('/login', loginDoctor);
 
 // ------------------- Get All Doctors (Protected Route) -------------------
-router.get('/profile', auth(['Doctor']), getDoctors);
-
+// Allow both Doctors and Patients to see the list of doctors
+router.get('/profile', auth(['Doctor', 'Patient']), getDoctors);
 export default router;

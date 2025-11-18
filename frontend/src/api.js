@@ -111,3 +111,60 @@ export const getUserProfile = async (role) => {
     }
     return makeApiRequest(endpoint, 'GET', null, true); 
 };
+
+// Add this new function to frontend/src/api.js
+
+export const getMyAppointments = async () => {
+  const endpoint = `${API_BASE_URL}/appointments/my`;
+  // The `true` at the end tells makeApiRequest to include the auth token
+  return makeApiRequest(endpoint, 'GET', null, true);
+};
+
+// Add this new function to frontend/src/api.js
+
+export const getDoctorSchedule = async () => {
+  const endpoint = `${API_BASE_URL}/appointments/schedule`;
+  // The `true` at the end includes the Doctor's auth token
+  return makeApiRequest(endpoint, 'GET', null, true); 
+};
+
+// Add this new function to frontend/src/api.js
+
+export const getDashboardStats = async () => {
+  const endpoint = `${API_BASE_URL}/dashboard/stats`;
+  // The `true` includes the Admin's auth token
+  return makeApiRequest(endpoint, 'GET', null, true);
+};
+
+// Add these two functions to frontend/src/api.js
+
+// Fetches a list of all registered doctors
+export const getAllDoctors = async () => {
+  // This endpoint uses the logic from `doctor.controller.js`'s `getDoctors` function
+  const endpoint = `${API_BASE_URL}/doctors/profile`; 
+  // A patient needs to be logged in to see doctors
+  return makeApiRequest(endpoint, 'GET', null, true);
+};
+
+// Books a new appointment
+export const bookAppointment = async (appointmentData) => {
+  const endpoint = `${API_BASE_URL}/appointments/book`;
+  // `appointmentData` will be an object like { doctorId, appointmentDate, reason }
+  return makeApiRequest(endpoint, 'POST', appointmentData, true);
+};
+
+// Add this new function to frontend/src/api.js
+
+export const cancelAppointment = async (appointmentId) => {
+  const endpoint = `${API_BASE_URL}/appointments/${appointmentId}/cancel`;
+  // This is a PUT request and requires authentication
+  return makeApiRequest(endpoint, 'PUT', null, true);
+};
+
+// Add this new function to frontend/src/api.js
+
+export const markAsCompleted = async (appointmentId) => {
+  const endpoint = `${API_BASE_URL}/appointments/${appointmentId}/complete`;
+  // This is a PUT request and requires authentication
+  return makeApiRequest(endpoint, 'PUT', null, true);
+};
